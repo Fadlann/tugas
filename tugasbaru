@@ -1,0 +1,89 @@
+#include <iostream>
+using namespace std;
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+void biodata()
+{
+	cout<<"NIM : "<<endl;
+	cout<<"Nama : "<<endl;
+	cout<<"Kelas : "<<endl;
+	cout<<"Semester : "<<endl;	
+}
+
+void menu()
+{
+	cout<<"[1] Biodata"<<endl;
+	cout<<"[2] Hitung"<<endl;
+	cout<<"[3] Deret"<<endl;
+	cout<<"[4] Keluar"<<endl;
+	cout<<"masukkan pilihan : ";
+}
+
+int hitung(int a, int b)
+{
+	return (a*b)/2;
+}
+
+int deret( int a )
+{
+	cout<<"deret"<<endl;
+}
+
+int main(int argc, char** argv) {
+	menu:
+	int pilih,a,b;
+	char ulang;
+	menu();
+	cin>>pilih;
+	system("cls");
+
+	switch(pilih)
+	{
+		case 1:
+			biodata();
+			break;
+		case 2:
+			cout<<"Masukkan alas : ";
+			cin>>a;
+			cout<<"Masukkan tinggi : ";
+			cin>>b;
+			system("cls");
+			cout<<"Luas segitiga adalah : ";
+			cout<<hitung(a,b)<<endl;
+			break;
+		case 3:
+			cout<<"Masukkan suku ke[0..1000]"<<endl;
+			cin>>a;
+			system("cls");
+			deret(a);
+			break;
+		case 4:
+			system("cls");
+			goto end;
+			break;
+		default:
+			system("cls");
+			cout<<"yang bener anjing!"<<endl;
+			system("pause");
+			system("cls");
+			goto menu;		
+	}
+	goBack:
+	cout<<"ulang [y/n]? ";
+	cin>>ulang;
+	if(ulang == 'y' || ulang == 'Y' )
+	{
+		system("cls");
+		goto menu;
+	}
+	if(ulang == 'n' || ulang == 'N'  )
+	{
+		end:
+		system("cls");
+	} else
+	{
+		system("cls");
+		cout<<"yang bener anjing!"<<endl;
+		goto goBack;
+	}					
+}
