@@ -69,7 +69,6 @@ int main(int argc, char** argv) {
         c = c - 2;
         
         //Membuat if dengan condition bila a lebih besar dari b
-        //Nilai a adalah 8 dan nilai b adalah 8, dikarenakan a tidak lebih besar dari b maka statement didalam if tidak akan dieksekusi 
         if ( a > b )
         {
             //Nilai a diubah menjadi a(yang bernilai 8) dikurang b(yang bernilai 8) sama dengan 0
