@@ -4,24 +4,29 @@ using namespace std;
 
 int main(int argc, char** argv) {
     /*
+    
     //Membuat variabel integer a dengan nilai 9, integer b dengan nilai 5, integer c dengan nilai 0
     int a = 9;
     int b = 5;
     int c = 0;
     
-    //Membuat do yang tereksekusi setidaknya sekali sebelum mengecek validitas condition
+    //Membuat do while yang dimana do tereksekusi sebelum mengecek validitas condition
     do
     {
         //Nilai b diubah menjadi b (yang bernilai 5) ditambah 4 sama dengan 9
         b = b + 4;
+        
         //Output nilai a (yang bernilai 9) lalu buat line baru
         cout<<a<<endl;
     }
     
-    //Membuat while loop dengan condition a tidak sama dengan b.
-    //Nilai a adalah 9 dan nilai b adalah 9, dikarenakan a sama dengan b maka statement didalam while tidak akan dieksekusi 
+    //Membuat condition do while loop dengan condition a tidak sama dengan b.
+    //Nilai a adalah 9 dan nilai b adalah 9, dikarenakan a sama dengan b maka loop berhenti
     while(a != b);
-    {
+    
+    //ini kurung ga guna entah ngapa ada disini
+    { //<-- kurungan ini ga guna
+    
         //Nilai c diubah menjadi b (yang bernilai 9) dikurang 2 sama dengan 7
         c = b - 2;
         
@@ -31,8 +36,8 @@ int main(int argc, char** argv) {
         //Output nilai b (yang bernilai 13) lalu buat line baru
         cout<<b<<endl;
         
-        //note : semua yang didalam while loop tidak dieksekusi
-    }
+    } //<-- kurungan ini ga guna
+    
     //Mengembalikan nilai 0 dikarenakan method mempunyai return value sebuah int
     return 0;
     */
