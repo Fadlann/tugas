@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
         
     } //<-- kurungan ini ga guna
     
-    //Mengembalikan nilai 0 dikarenakan method mempunyai return value sebuah int
+    //Mengembalikan nilai 0 dikarenakan method main() mempunyai return value sebuah int
     return 0;
     */
     
