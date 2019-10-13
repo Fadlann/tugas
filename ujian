@@ -4,41 +4,79 @@ using namespace std;
 
 int main(int argc, char** argv) {
     /*
+    //Membuat variabel integer a dengan nilai 9, integer b dengan nilai 5, integer c dengan nilai 0
     int a = 9;
     int b = 5;
     int c = 0;
+    
+    //Membuat do yang tereksekusi setidaknya sekali sebelum mengecek validitas condition
     do
     {
+        //Nilai b diubah menjadi b (yang bernilai 5) ditambah 4 sama dengan 9
         b = b + 4;
+        //Output nilai a (yang bernilai 9) lalu buat line baru
         cout<<a<<endl;
     }
+    
+    //Membuat while loop dengan condition a tidak sama dengan b.
+    //Nilai a adalah 9 dan nilai b adalah 9, dikarenakan a sama dengan b maka statement didalam while tidak akan dieksekusi 
     while(a != b);
     {
+        //Nilai c diubah menjadi b (yang bernilai 9) dikurang 2 sama dengan 7
         c = b - 2;
+        
+        //Nilai b diubah menjadi c (yang bernilai 7) ditambah b (yang bernilai 9) dikurang 3 sama dengan 13
         b = ( c + b ) - 3;
+        
+        //Output nilai b (yang bernilai 13) lalu buat line baru
         cout<<b<<endl;
+        
+        //note : semua yang didalam while loop tidak dieksekusi
     }
+    //Mengembalikan nilai 0 dikarenakan method mempunyai return value sebuah int
     return 0;
     */
     
+    //--------------------------------------------------------------------------------------------------------------
+    
+    //Membuat variabel integer a dengan nilai 0, integer b dengan nilai 5, integer c dengan nilai 9
     int a = 0;
     int b = 5;
     int c = 9;
+    
+    //Nilai a diubah menjadi b (yang bernilai 5) ditambah 3 sama dengan 8
     a = b + 3;
+    
+    //Nilai b diubah menjadi c (yang bernilai 9) dikurang 1 sama dengan 8
     b = c - 1;
+    
+    //Output nilai a (yang bernilai 8) lalu buat line baru
     cout<<a<<endl;
+    
+    //Output nilai b (yang bernilai 8) lalu buat line baru
     cout<<b<<endl;
+    
+    //Membuat while loop dengan condition condition a tidak sama dengan b.
+    //Nilai a adalah 8 dan nilai b adalah 8, dikarenakan a sama dengan b maka statement didalam while tidak akan dieksekusi 
     while( a != b )
     {
+        //Nilai c diubah menjadi c (yang bernilai 9) dikurang 2 sama dengan 7
         c = c - 2;
+        
+        //Membuat if dengan condition bila a lebih besar dari b
+        //Nilai a adalah 8 dan nilai b adalah 8, dikarenakan a tidak lebih besar dari b maka statement didalam if tidak akan dieksekusi 
         if ( a > b )
         {
+            //Nilai a diubah menjadi a(yang bernilai 8) dikurang b(yang bernilai 8) sama dengan 0
             a = a - b;
         }
+        //Bila kondisi a lebih besar dari b tidak terpenuhkan / a kurang atau sama dengan b, maka eksekusi statement didalam else
         else
         {
+            //Nilai b diubah menjadi c(yang bernilai 7) dikurang a(yang bernilai 8) dama dengan -1
             b = c - a;
         }
+        //note : semua yang didalam while loop tidak dieksekusi
     }
     cout<<a<<endl;
     cout<<b<<endl;
