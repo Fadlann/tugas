@@ -74,6 +74,7 @@ int main(int argc, char** argv) {
             //Nilai a diubah menjadi a(yang bernilai 8) dikurang b(yang bernilai 8) sama dengan 0
             a = a - b;
         }
+        
         //Bila kondisi a lebih besar dari b tidak terpenuhkan / a kurang atau sama dengan b, maka eksekusi statement didalam else
         else
         {
