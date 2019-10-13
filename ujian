@@ -78,6 +78,9 @@ int main(int argc, char** argv) {
         }
         //note : semua yang didalam while loop tidak dieksekusi
     }
+    //Output nilai a (yang bernilai 8) lalu buat line baru
     cout<<a<<endl;
+    
+    //Output nilai b (yang bernilai 8) lalu buat line baru
     cout<<b<<endl;
 }
