@@ -1,0 +1,164 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+void triangle();
+void error();
+void menu();
+void konfigBio();
+void tampilkanBio();
+void buatGaris(int panjangNIM, int panjangnama, int panjangusia, int panjanghobi);
+void buatSpasi(int total);
+string NIM;
+string nama;
+string usia;
+string hobi;
+
+int main(int argc, char** argv) {
+	menu();
+	return 0;
+}
+
+void triangle()
+{
+	for(int y = 4; y >= 1; y-- )
+	{
+		for(int x = 1; x <= y; x++ )
+		{
+			cout<<2*x<<" ";
+			if(x == y)
+			{
+				cout<<endl;
+			}
+		}
+	}
+	string ulang;
+	cout<<"Ulangi masukan[y/n] : ";
+	cin>>ulang;
+	if(ulang == "y" || ulang == "Y") 
+	{
+		system("cls");
+		triangle();
+	}
+	else if(ulang == "n" || ulang == "N")
+	{
+		system("cls");
+		menu();
+	}
+	else error();
+}
+
+void menu()
+{
+	cout<<"-------------------------------"<<endl;
+	cout<<"           MENU UTAMA          "<<endl;
+	cout<<"-------------------------------"<<endl;
+	cout<<"1. Konfigurasi Bio "<<endl;
+	cout<<"2. Triangle "<<endl;
+	cout<<"3. Tampilkan Bio "<<endl;
+	cout<<"4. Keluar "<<endl;
+	cout<<"Pilihan anda [1...4]: ";
+	int pil;
+	cin>>pil;
+	switch(pil)
+	{
+		case 1 :
+			system("cls");
+			konfigBio();
+		case 2 :
+			system("cls");
+			triangle();	
+		case 3 :
+			system("cls");
+			tampilkanBio();
+	}
+}
+
+
+void error()
+{
+	cout<<endl;
+	cout<<"Periksa Kembali Masukan anda, tekan ENTER Untuk Kembali Ke menu ";
+
+}
+
+void konfigBio()
+{
+	cout<<"---------------------------------"<<endl;
+	cout<<"           Config bio            "<<endl;
+	cout<<"---------------------------------"<<endl;
+	cout<<"Masukan NIM  : ";
+	cin>>NIM;
+	cout<<"Masukan Nama  : ";
+	cin>>nama;
+	cout<<"Usia  : ";
+	cin>>usia;
+	cout<<"Masukan Hobi  : ";
+	cin>>hobi;
+	cout<<"---------------------------------"<<endl;
+	cout<<"apakah data sudah benar[y/n]: ";
+	string pil;
+	cin>>pil;
+	if(pil == "y" || pil == "Y") 
+	{
+		system("cls");
+		menu();
+	}
+	else if(pil == "n" || pil == "N")
+	{
+		system("cls");
+		konfigBio();
+	}
+}
+
+void tampilkanBio()
+{
+	int panjangNIM = NIM.length();
+	int panjangnama = nama.length();
+	int panjangusia = usia.length();
+	int panjanghobi = hobi.length();
+	string pil;
+	buatGaris(panjangNIM,panjangnama,panjangusia,panjanghobi);
+	cout<<"|            BIODATA                "<<endl;
+	buatGaris(panjangNIM,panjangnama,panjangusia,panjanghobi);
+	cout<<"|";
+	buatSpasi(panjangNIM);
+	cout<<"NIM";
+	buatSpasi(panjangNIM);
+	cout<<"|";
+	buatSpasi(panjangnama);
+	cout<<"Nama";
+	buatSpasi(panjangnama);
+	cout<<"|";
+	buatSpasi(panjangusia);
+	cout<<"Usia";
+	buatSpasi(panjangusia);
+	cout<<"|";
+	buatSpasi(panjanghobi);
+	cout<<"Hobi";
+	buatSpasi(panjanghobi);
+	cout<<"|"<<endl;
+	
+	cout<<"| "<<NIM<<" | "<<nama<<" | "<<usia<<" | "<<hobi;
+	system("pause"); 
+	
+}
+
+void buatGaris(int panjangNIM, int panjangnama, int panjangusia, int panjanghobi)
+{
+	for(int i = 0; i < panjangNIM + panjangnama + panjangusia + panjanghobi; i++ )
+	{
+		cout<<"--";
+	}
+	cout<<endl;
+}
+
+void buatSpasi(int total)
+{
+	for(int i = 0; i < total/2; i++ )
+	{
+		cout<<" ";
+	}
+}
+
+
