@@ -27,6 +27,14 @@ int main(int argc, const char * argv[]) {
 
 void konfigBio()
 {
+    if(listNama.size() > 0)
+    {
+        listNama.clear();
+        listNIM.clear();
+        listUTS.clear();
+        listUAS.clear();
+    }
+    
     bool lanjut = false;
     int i = 0;
     do {
@@ -158,5 +166,5 @@ void menu()
             goto pilihan;
             break;
     }
-} 
+}
 
