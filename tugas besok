@@ -1,0 +1,149 @@
+//
+//  main.cpp
+//  New
+//
+//  Created by M Fadlan Ridho on 20/10/19.
+//  Copyright © 2019 M Fadlan Ridho. All rights reserved.
+//
+
+#include <iostream>
+#include <list>
+using namespace std;
+
+void konfigBio();
+void menu();
+void bio();
+
+list<string> listNama;
+list<int> listNIM;
+list<int> listUTS;
+list<int> listUAS;
+
+int main(int argc, const char * argv[]) {
+    menu();
+    return 0;
+}
+
+void konfigBio()
+{
+    bool lanjut = false;
+    int i = 0;
+    do {
+        i++;
+        cout<<"------------------"<<endl;
+        cout<<"Konfgurasi Biodata "<< i <<endl;
+        cout<<"------------------"<<endl;
+        cout<<"Masukkan data "<<i<<endl;
+        
+        cout<<"Nama : ";
+        string nama;
+        cin>>nama;
+        listNama.push_back(nama);
+        
+        cout<<"NIM : ";
+        int NIM;
+        cin>>NIM;
+        listNIM.push_back(NIM);
+        
+        cout<<"Nilai UTS : ";
+        int UTS;
+        cin>>UTS;
+        listUTS.push_back(UTS);
+        
+        cout<<"Nilai UAS : ";
+        int UAS;
+        cin>>UAS;
+        listUAS.push_back(UAS);
+        
+        pilihan:
+        char pil;
+        cout<<"apakah ingin menambah data? [y/n]? ";
+        cin>>pil;
+        cout<<endl;
+        if( pil == 'y' || pil == 'Y'  )
+            lanjut = true;
+        else if ( pil == 'n' || pil == 'N' )
+            lanjut = false;
+        else
+        {
+            cout<<"mohon pilih y atau n saja";
+            goto pilihan;
+        }
+    } while(lanjut);
+    cout<<string(50,'\n');
+    menu();
+
+}
+
+void bio()
+{
+    if(listNama.size() <= 0)
+    {
+        cout<<"mohon isi data terlebih dahulu";
+        cin.get();
+        menu();
+        return;
+    }
+    
+    int i = 0;
+    
+    while(listNama.size() > 0 ){
+        
+        i++;
+        cout<<"------------------"<<endl;
+        cout<<" Biodata "<< i <<endl;
+        cout<<"------------------"<<endl;
+        
+        cout<<"Nama : "<< listNama.front()<<endl;
+        listNama.remove(listNama.front());
+        
+        cout<<"NIM : "<< listNIM.front()<<endl;
+        listNIM.remove(listNIM.front());
+        
+        cout<<"Nilai UTS : "<< listUTS.front()<<endl;
+        listUTS.remove(listUTS.front());
+        
+        cout<<"Nilai UAS : "<< listUAS.front()<<endl;
+        listUAS.remove(listUAS.front());
+        
+        cout<<endl;
+    }
+    cout<<"tekan tombol apapun untuk kembali ke menu utama";
+    system("read");
+    cout<<string(50,'\n');
+    menu();
+
+}
+
+void menu()
+{
+    cout<<"-------------------"<<endl;
+    cout<<"MENU UTAMA"<<endl;
+    cout<<"-------------------"<<endl;
+    cout<<"[1] Konfig Bio"<<endl;
+    cout<<"[2] Bio"<<endl;
+    cout<<"[3] Keluar"<<endl;
+    cout<<"Masukkan pilihan : ";
+    pilihan:
+    int pilihan;
+    cin>>pilihan;
+    switch(pilihan)
+    {
+        case 1:
+            cout<<string(50,'\n');
+            konfigBio();
+            break;
+        case 2:
+            cout<<string(50,'\n');
+            bio();
+            break;
+        case 3:
+            break;
+        default:
+            cout<<string(50,'\n');
+            cout<<"mohon pilih y atau n saja"<<endl;
+            goto pilihan;
+            break;
+    }
+}
+
