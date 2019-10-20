@@ -76,7 +76,7 @@ void konfigBio()
             lanjut = false;
         else
         {
-            cout<<"mohon pilih y atau n saja";
+            cout<<"mohon pilih y atau n saja"<<endl;
             goto pilihan;
         }
     } while(lanjut);
@@ -145,25 +145,25 @@ void menu()
     cout<<"[2] Bio"<<endl;
     cout<<"[3] Keluar"<<endl;
     cout<<"Masukkan pilihan : ";
-    pilihan:
-    int pilihan;
-    cin>>pilihan;
-    switch(pilihan)
+    char pil;
+    cin>>pil;
+    switch(pil)
     {
-        case 1:
+        case '1':
             cout<<string(50,'\n');
             konfigBio();
             break;
-        case 2:
+        case '2':
             cout<<string(50,'\n');
             bio();
             break;
-        case 3:
+        case '3':
             break;
         default:
             cout<<string(50,'\n');
-            cout<<"mohon pilih y atau n saja"<<endl;
-            goto pilihan;
+            cout<<"mohon pilih pilhan yang diberikan saja"<<endl;
+
+            menu();
             break;
     }
 }
