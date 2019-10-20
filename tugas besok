@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <list>
+#include <string>
 using namespace std;
 
 void konfigBio();
@@ -15,9 +16,9 @@ void menu();
 void bio();
 
 list<string> listNama;
-list<int> listNIM;
-list<int> listUTS;
-list<int> listUAS;
+list<string> listNIM;
+list<string> listUTS;
+list<string> listUAS;
 
 int main(int argc, const char * argv[]) {
     menu();
@@ -37,22 +38,23 @@ void konfigBio()
         
         cout<<"Nama : ";
         string nama;
-        cin>>nama;
+        getline(cin, nama, '\n');
+        getline(cin, nama, '\n');
         listNama.push_back(nama);
         
         cout<<"NIM : ";
-        int NIM;
-        cin>>NIM;
+        string NIM;
+        getline(cin, NIM, '\n');
         listNIM.push_back(NIM);
         
         cout<<"Nilai UTS : ";
-        int UTS;
-        cin>>UTS;
+        string UTS;
+        getline(cin, UTS, '\n');
         listUTS.push_back(UTS);
         
         cout<<"Nilai UAS : ";
-        int UAS;
-        cin>>UAS;
+        string UAS;
+        getline(cin, UAS, '\n');
         listUAS.push_back(UAS);
         
         pilihan:
@@ -85,27 +87,38 @@ void bio()
         return;
     }
     
-    int i = 0;
+    int batas = listNama.size();
     
-    while(listNama.size() > 0 ){
+    string arrNama[listNama.size()];
+    copy(listNama.begin(), listNama.end(), arrNama);
+    
+    string arrNIM[listNama.size()];
+    copy(listNIM.begin(), listNIM.end(), arrNIM);
+
+    string arrUTS[listNama.size()];
+    copy(listUTS.begin(), listUTS.end(), arrUTS);
+
+    string arrUAS[listNama.size()];
+    copy(listUAS.begin(), listUAS.end(), arrUAS);
+
+    for(int i = 0; i < batas; i++){
         
-        i++;
         cout<<"------------------"<<endl;
-        cout<<" Biodata "<< i <<endl;
+        cout<<" Biodata "<< i + 1 <<endl;
         cout<<"------------------"<<endl;
         
-        cout<<"Nama : "<< listNama.front()<<endl;
-        listNama.remove(listNama.front());
+        cout<<"Nama : "<< arrNama[i]<<endl;
         
-        cout<<"NIM : "<< listNIM.front()<<endl;
-        listNIM.remove(listNIM.front());
         
-        cout<<"Nilai UTS : "<< listUTS.front()<<endl;
-        listUTS.remove(listUTS.front());
+        cout<<"NIM : "<< arrNIM[i]<<endl;
+
         
-        cout<<"Nilai UAS : "<< listUAS.front()<<endl;
-        listUAS.remove(listUAS.front());
+        cout<<"Nilai UTS : "<< arrUTS[i]<<endl;
         
+        
+        cout<<"Nilai UAS : "<< arrUAS[i]<<endl;
+
+
         cout<<endl;
     }
     cout<<"tekan tombol apapun untuk kembali ke menu utama";
