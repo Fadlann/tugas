@@ -26,7 +26,7 @@ int main() {
     int hour = GetHour();
     cout<<"Sekarang jam "<<hour<<endl;
     string printout;
-    if (hour>1 && hour < 12) printout = "Pagi!";
+    if (hour>=1 && hour < 12) printout = "Pagi!";
     if (hour>=12 && hour < 18) printout = "Siang!";
     if (hour>=18 || hour < 1) printout = "Malam!";
     cout<<printout<<endl;
