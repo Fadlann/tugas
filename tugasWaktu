@@ -1,0 +1,32 @@
+//
+//  main.cpp
+//  tugas
+//
+//  Created by M Fadlan Ridho on 07/11/19.
+//  Copyright © 2019 M Fadlan Ridho. All rights reserved.
+//
+using namespace std;
+
+#include <iostream>
+#include <stdio.h>
+#include <time.h>
+
+const int GetHour() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%H", &tstruct);
+    return atoi(buf);
+}
+
+int main() {
+    int hour = GetHour();
+    string printout;
+    if (hour>1 && hour < 12) printout = "Pagi";
+    if (hour>=12 && hour < 18) printout = "Siang";
+    if (hour>=18 || hour < 1) printout = "Malam";
+    cout<<printout;
+}
