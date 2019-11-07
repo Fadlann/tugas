@@ -2,7 +2,7 @@
 //  main.cpp
 //  tugas
 //
-//  Created by M Fadlan Ridho on 07/11/19.
+//  Created by M Fadlan Ridho on 28/10/19.
 //  Copyright © 2019 M Fadlan Ridho. All rights reserved.
 //
 using namespace std;
@@ -24,9 +24,12 @@ const int GetHour() {
 
 int main() {
     int hour = GetHour();
+    cout<<"Sekarang jam "<<hour<<endl;
     string printout;
-    if (hour>1 && hour < 12) printout = "Pagi";
-    if (hour>=12 && hour < 18) printout = "Siang";
-    if (hour>=18 || hour < 1) printout = "Malam";
-    cout<<printout;
+    if (hour>1 && hour < 12) printout = "Pagi!";
+    if (hour>=12 && hour < 18) printout = "Siang!";
+    if (hour>=18 || hour < 1) printout = "Malam!";
+    cout<<printout<<endl;
+        
 }
+
