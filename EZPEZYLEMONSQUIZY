@@ -25,6 +25,7 @@ int main(int argc, char** argv)
 
 	while(buatBiodata)
 	{
+		isiData:
 		biodata sahabat;
 		cout<<"Masukin nama sahabatmu: "; getline(cin,sahabat.nama);
 		cout<<"Masukin tanggal lahir sahabatmu: "; cin>>sahabat.tanggal;
@@ -32,8 +33,25 @@ int main(int argc, char** argv)
 		cout<<"Masukin tahun lahir sahabatmu: "; cin>>sahabat.tahun;
 		cin.ignore();
 		cout<<"Masukin hobi sahabatmu: "; getline(cin,sahabat.hobi);
+		cout<<"Apakah data sudah benar?[y/n] ";
+		back:
+		char kebenaran; 
+		cin>>kebenaran;
+		switch(tolower(kebenaran)) 
+		{
+		   case 'y':
+		    	break;
+		   case 'n':
+		   		cin.ignore();
+		   		goto isiData;
+		    	break;
+		   default : 
+		      	cout<<"Mohon pilih y atau n saja"<<endl;
+		      	goto back;
+		      	break;
+		}
 		daftarSahabat.push_back(sahabat);
-		cout<<"Mau nambah [y/n]";
+		cout<<"Mau nambah [y/n] ";
 		ask:
 		char input;
 		cin>>input; cout<<endl;
@@ -56,15 +74,12 @@ int main(int argc, char** argv)
 		
 	list<biodata>::iterator it;
 	int i = 0;
+	cout<<"Daftar Sahabat Anda"<<endl;
+	cout<<"No.\tNama\t\t\ttanggal kelahiran\t\thobi"<<endl;
 	for (it = daftarSahabat.begin(); it != daftarSahabat.end(); it++)
 	{
 		i++;
-		cout<<"Sahabatmu nomor "<<i<<endl;
-		cout<<"Nama: "<<it->nama<<endl;
-		cout<<"Tanggal lahir: "<<it->tanggal<<endl;
-		cout<<"Bulan lahir: "<<it->bulan<<endl;
-		cout<<"Tahun lahir: "<<it->tahun<<endl;
-		cout<<"Hobi: "<<it->hobi<<endl;
+		cout<<i<<"."<<"\t"<<it->nama<<"\t\t\t\t"<<it->tanggal<<" "<<it->bulan<<" "<<it->tahun<<"\t\t"<<it->hobi<<endl;
 		cout<<endl;
 	}
 	
