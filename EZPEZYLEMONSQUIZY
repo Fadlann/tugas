@@ -31,9 +31,10 @@ int main(int argc, char** argv)
 		cin.ignore();
 		cout<<"Masukin hobi sahabatmu: "; getline(cin,sahabat.hobi);
 		daftarSahabat.push_back(sahabat);
+		cout<<"Mau nambah [y/n]";
 		ask:
 		char input;
-		cout<<"Mau nambah [y/n]"; cin>>input; cout<<endl;
+		cin>>input; cout<<endl;
 		switch(input) 
 		{
 		   case 'y':
@@ -44,7 +45,7 @@ int main(int argc, char** argv)
 		      break;
 		  
 		   default : 
-		      cout<<"Mohon pilih y atau n saja";
+		      cout<<"Mohon pilih y atau n saja"<<endl;
 		      goto ask;
 		      break;
 		}
@@ -52,8 +53,11 @@ int main(int argc, char** argv)
 	}
 		
 	list<biodata>::iterator it;
+	int i = 0;
 	for (it = daftarSahabat.begin(); it != daftarSahabat.end(); it++)
 	{
+		i++;
+		cout<<"Sahabatmu nomor "<<i<<endl;
 		cout<<"Nama: "<<it->nama<<endl;
 		cout<<"Tanggal lahir: "<<it->tanggal<<endl;
 		cout<<"Bulan lahir: "<<it->bulan<<endl;
