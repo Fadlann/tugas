@@ -3,6 +3,8 @@
 #include <iterator> 
 #include <array>
 #include <string>
+#include <stdio.h>
+#include <ctype.h>
 
 
 using namespace std;
@@ -35,12 +37,12 @@ int main(int argc, char** argv)
 		ask:
 		char input;
 		cin>>input; cout<<endl;
-		switch(input) 
+		switch(tolower(input)) 
 		{
-		   case 'y'||'Y':
+		   case 'y':
 		      buatBiodata = true;
 		      break;
-		   case 'n'||'N':
+		   case 'n':
 		      buatBiodata = false;
 		      break;
 		  
