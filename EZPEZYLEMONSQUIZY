@@ -1,0 +1,66 @@
+#include <iostream>
+#include <list> 
+#include <iterator> 
+#include <array>
+#include <string>
+
+
+using namespace std;
+
+struct biodata
+{
+	string nama;
+	int tanggal;
+	char bulan[100];
+	int tahun;
+	string hobi;
+};
+
+int main(int argc, char** argv) 
+{
+	bool buatBiodata = true;
+    list <biodata> daftarSahabat; 
+
+	while(buatBiodata)
+	{
+		biodata sahabat;
+		cout<<"Masukin nama sahabatmu: "; getline(cin,sahabat.nama);
+		cout<<"Masukin tanggal lahir sahabatmu: "; cin>>sahabat.tanggal;
+		cout<<"Masukin bulan lahir sahabatmu: "; cin>>sahabat.bulan;
+		cout<<"Masukin tahun lahir sahabatmu: "; cin>>sahabat.tahun;
+		cin.ignore();
+		cout<<"Masukin hobi sahabatmu: "; getline(cin,sahabat.hobi);
+		daftarSahabat.push_back(sahabat);
+		ask:
+		char input;
+		cout<<"Mau nambah [y/n]"; cin>>input; cout<<endl;
+		switch(input) 
+		{
+		   case 'y':
+		      buatBiodata = true;
+		      break;
+		   case 'n'  :
+		      buatBiodata = false;
+		      break;
+		  
+		   default : 
+		      cout<<"Mohon pilih y atau n saja";
+		      goto ask;
+		      break;
+		}
+		cin.ignore();
+	}
+		
+	list<biodata>::iterator it;
+	for (it = daftarSahabat.begin(); it != daftarSahabat.end(); it++)
+	{
+		cout<<"Nama: "<<it->nama<<endl;
+		cout<<"Tanggal lahir: "<<it->tanggal<<endl;
+		cout<<"Bulan lahir: "<<it->bulan<<endl;
+		cout<<"Tahun lahir: "<<it->tahun<<endl;
+		cout<<"Hobi: "<<it->hobi<<endl;
+		cout<<endl;
+	}
+	
+	return 0;
+}
