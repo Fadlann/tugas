@@ -37,10 +37,10 @@ int main(int argc, char** argv)
 		cin>>input; cout<<endl;
 		switch(input) 
 		{
-		   case 'y':
+		   case 'y'||'Y':
 		      buatBiodata = true;
 		      break;
-		   case 'n'  :
+		   case 'n'||'N':
 		      buatBiodata = false;
 		      break;
 		  
