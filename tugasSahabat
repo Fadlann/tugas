@@ -13,14 +13,12 @@ struct biodata
     string hobi;
 };
 
-long findLongest(long size,biodata arr[],string yangMana);
+long findLongestName(long size,biodata arr[]);
 
 int main(int argc, char** argv)
 {
-    
     bool buatBiodata = true;
     list <biodata> daftarSahabat;
-
     while(buatBiodata)
     {
         isiData:
@@ -69,11 +67,10 @@ int main(int argc, char** argv)
         }
         cin.ignore();
     }
-    
     biodata arr[daftarSahabat.size()];
-    std::copy(daftarSahabat.begin(), daftarSahabat.end(), arr);
+    copy(daftarSahabat.begin(), daftarSahabat.end(), arr);
     
-    long longestName = findLongest(daftarSahabat.size(), arr, "nama");
+    long longestName = findLongestName(daftarSahabat.size(), arr);
     string spacingNama = longestName > 3 ? string ( longestName - 3, ' ' ) : " ";
     long longest4Date = 15;
     string spacingTanggal;
@@ -90,23 +87,13 @@ int main(int argc, char** argv)
         <<spacingTanggal<<arr[i].hobi<<endl;
         cout<<endl;
     }
-    
 }
 
-long findLongest(long size,biodata arr[],string yangMana)
+long findLongestName(long size,biodata arr[])
 {
     long wordsCount = 0;
     for (int i = 0; i < size; i++) {
-        if(yangMana == "nama")
-        {
-            if(arr[i].nama.length() > wordsCount) wordsCount = arr[i].nama.length();
-        }
-        if(yangMana == "tanggal")
-        {
-            long temp = arr[i].tanggal.length()+arr[i].bulan.length()+arr[i].tahun.length();
-            if(temp > wordsCount)
-                wordsCount = temp;
-        }
+        if(arr[i].nama.length() > wordsCount) wordsCount = arr[i].nama.length();
     }
     return wordsCount;
 }
