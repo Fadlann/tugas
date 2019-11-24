@@ -7,7 +7,7 @@
 using namespace std;
 struct biodata
 {
-    int NIM;
+    string NIM;
     string nama;
     list<float> listTugas;
     float UTS;
@@ -20,6 +20,7 @@ void InputBiodata();
 void LihatBiodata();
 void CariBiodata();
 void ShowBio(biodata arrData[],int i,long longestName);
+int additionalSpacing(float number);
 
 int main(int argc, char** argv)
 {
@@ -82,10 +83,15 @@ void InputBiodata()
         int nomorTugas = 0;
         bool lanjut = true;
         biodata biodata;
-
-        cout<<"Masukin NIM: "; cin>>biodata.NIM;
         cin.ignore();
-        cout<<"Masukin Nama: "; getline(cin,biodata.nama);;
+        NIMinput:
+        cout<<"Masukin NIM: "; getline(cin, biodata.NIM);
+        if(biodata.NIM.length() != 10)
+        {
+            cout<<"NIM harus memiliki 10 karakter"<<endl;
+            goto NIMinput;
+        }
+        cout<<"Masukin Nama: "; getline(cin,biodata.nama);
         do
         {
             nomorTugas++;
@@ -115,6 +121,7 @@ void InputBiodata()
                 break;
            case 'n':
                 biodata.listTugas.clear();
+                cout<<endl;
                 goto back;
                 break;
            default :
@@ -152,7 +159,7 @@ void LihatBiodata()
     copy(listData.begin(), listData.end(), arrData);
     long longestName = findLongest(listData.size(),arrData);
     cout<<"-------------------------------------------------------------------------------"<<endl;
-    cout<<"NIM"<<string (10, ' ' )<<"Nama"<<string (longestName - 1, ' ' )<<"Rata tugas   "<<" UTS    "<<" UAS    "<<"Akhir   "<<"Huruf"<<endl;
+    cout<<"NIM"<<string (10, ' ' )<<"Nama"<<string (longestName-1, ' ' )<<"Rata tugas   "<<"UTS     "<<"UAS     "<<"Akhir   "<<"Huruf"<<endl;
     cout<<"-------------------------------------------------------------------------------"<<endl;
 
     for (int i = 0; i < listData.size(); i++) {
@@ -164,8 +171,9 @@ void LihatBiodata()
 void CariBiodata()
 {
     cout<<endl;
-    int NIM;
-    cout<<"masukan NIM: "; cin>>NIM;
+    string NIM;
+    cin.ignore();
+    cout<<"masukkan NIM: "; getline(cin,NIM);
     
     long listSize = listData.size();
     biodata arrData[listData.size()];
@@ -175,7 +183,7 @@ void CariBiodata()
         if(arrData[i].NIM == NIM)
         {
             cout<<"-------------------------------------------------------------------------------"<<endl;
-            cout<<"NIM"<<string (10, ' ' )<<"Nama"<<string (arrData[i].nama.length() - 1, ' ' )<<"Rata tugas   "<<" UTS    "<<" UAS    "<<"Akhir   "<<"Huruf"<<endl;
+            cout<<"NIM"<<string (10, ' ' )<<"Nama"<<string (arrData[i].nama.length()-1, ' ' )<<"Rata tugas   "<<"UTS     "<<"UAS     "<<"Akhir   "<<"Huruf"<<endl;
             cout<<"-------------------------------------------------------------------------------"<<endl;
             ShowBio(arrData,i,arrData[i].nama.length());
             break;
@@ -208,10 +216,19 @@ void ShowBio(biodata arrData[],int i,long longestName)
     float akhir = (25.0/100.0) * (rataTugas + UTS) + (50.0/100.0) * UAS;
     char huruf;
     if(akhir >= 90) huruf = 'A';
-    if(akhir >= 79 || akhir < 90) huruf = 'A';
-    if(akhir >= 69 || akhir < 79) huruf = 'A';
-    if(akhir >= 59 || akhir < 69) huruf = 'A';
-    else huruf = 'A';
-    
-    cout<<arrData[i].NIM<<"   "<<arrData[i].nama<< string (longestName - arrData[i].nama.length()+3, ' ' )<<rataTugas<<string (8, ' ' )<<arrData[i].UTS<<"   "<<arrData[i].UAS<<"   "<<akhir<<"     "<<huruf<<endl;
+    else if(akhir >= 79 && akhir < 90) huruf = 'B';
+    else if(akhir >= 69 && akhir < 79) huruf = 'C';
+    else if(akhir >= 59 && akhir < 69) huruf = 'D';
+    else huruf = 'E';
+    cout<<arrData[i].NIM<<string(3, ' ' )<<arrData[i].nama<<string(longestName - arrData[i].nama.length()+3,' ')<<rataTugas<<string(7+additionalSpacing(rataTugas), ' ' )<<arrData[i].UTS<<string(2+additionalSpacing(arrData[i].UTS), ' ' )<<arrData[i].UAS<<string(2+additionalSpacing(arrData[i].UAS), ' ' )<<akhir<<string(4+additionalSpacing(akhir), ' ' )<<huruf<<endl;
+}
+
+int additionalSpacing(float number)
+{
+    if(number >= 10 && number <100)
+        return 1;
+    else if(number < 10)
+        return 2;
+    else
+        return 0;
 }
