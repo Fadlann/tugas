@@ -1,0 +1,217 @@
+#include <iostream>
+#include <list>
+#include <array>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+struct biodata
+{
+    int NIM;
+    string nama;
+    list<float> listTugas;
+    float UTS;
+    float UAS;
+};
+list<biodata> listData;
+void menu();
+long findLongest(long size,biodata arr[]);
+void InputBiodata();
+void LihatBiodata();
+void CariBiodata();
+void ShowBio(biodata arrData[],int i,long longestName);
+
+int main(int argc, char** argv)
+{
+    std::cout << std::fixed;
+    std::cout << std::setprecision(2);
+    menu();
+}
+
+long findLongest(long size,biodata arr[])
+{
+    long wordsCount = 0;
+    for (int i = 0; i < size; i++) {
+        if(arr[i].nama.length() > wordsCount) wordsCount = arr[i].nama.length();
+    }
+    return wordsCount;
+}
+
+void menu()
+{
+    cout<<endl;
+    cout<<"----------------------------"<<endl;
+    cout<<"\tMenu"<<endl;
+    cout<<"----------------------------"<<endl;
+    cout<<"1. Input Biodata"<<endl;
+    cout<<"2. Lihat Biodata"<<endl;
+    cout<<"3. Cari Biodata"<<endl;
+    cout<<"4. Exit"<<endl;
+    cout<<"----------------------------"<<endl;
+    back:
+    int pil;
+    cout<<"masukan pilihan [1..4]: ";cin>>pil;
+    switch(pil)
+    {
+        case 1:
+            InputBiodata();
+            break;
+        case 2:
+            LihatBiodata();
+            break;
+        case 3:
+            CariBiodata();
+            cout<<endl;
+            break;
+        case 4:
+            break;
+       default :
+              cout<<"Mohon pilih piilhan yang tertera saja"<<endl;
+              goto back;
+              break;
+    }
+}
+
+void InputBiodata()
+{
+    cout<<endl;
+    bool tambahData;
+    do
+    {
+        back:
+        int nomorTugas = 0;
+        bool lanjut = true;
+        biodata biodata;
+
+        cout<<"Masukin NIM: "; cin>>biodata.NIM;
+        cin.ignore();
+        cout<<"Masukin Nama: "; getline(cin,biodata.nama);;
+        do
+        {
+            nomorTugas++;
+            string output = nomorTugas == 1?"Masukin nilai tugas [tekan X bila tidak ada tugas]":"ada nilai tugas lagi? [tekan X bila tidak ada tugas]";
+            cout<<output<<endl;
+            
+            string input;
+            cout<<"Nilai Tugas "<<nomorTugas<<": "; getline(cin,input);
+            
+            if(input == "X"||input == "x") lanjut = false;
+            else
+            {
+                biodata.listTugas.push_back(stof(input));
+            }
+        }while(lanjut);
+        
+        cout<<"Masukin nilai UTS: "; cin>>biodata.UTS;
+        cout<<"Masukin nilai UAS: "; cin>>biodata.UAS;
+        ask:
+        cout<<"Data yang dimasukan benar?[y/n] :";
+        char input;
+        cin>>input;
+        switch(tolower(input))
+        {
+           case 'y':
+                listData.push_back(biodata);
+                break;
+           case 'n':
+                biodata.listTugas.clear();
+                goto back;
+                break;
+           default :
+                cout<<"Mohon pilih y atau n saja"<<endl;
+                goto ask;
+                break;
+        }
+        ask2:
+        cout<<"Ada data lagi?[y/n] :";
+        char input2;
+        cin>>input2;
+        switch(tolower(input2))
+        {
+            case 'y':
+                tambahData = true;
+                cout<<endl;
+                break;
+            case 'n':
+                tambahData = false;
+                break;
+            default :
+              cout<<"Mohon pilih y atau n saja"<<endl;
+              goto ask2;
+              break;
+        }
+    }
+    while(tambahData);
+    menu();
+}
+
+void LihatBiodata()
+{
+    cout<<endl;
+    biodata arrData[listData.size()];
+    copy(listData.begin(), listData.end(), arrData);
+    long longestName = findLongest(listData.size(),arrData);
+    cout<<"-------------------------------------------------------------------------------"<<endl;
+    cout<<"NIM"<<string (10, ' ' )<<"Nama"<<string (longestName - 1, ' ' )<<"Rata tugas   "<<" UTS    "<<" UAS    "<<"Akhir   "<<"Huruf"<<endl;
+    cout<<"-------------------------------------------------------------------------------"<<endl;
+
+    for (int i = 0; i < listData.size(); i++) {
+        ShowBio(arrData,i,longestName);
+    }
+    menu();
+}
+
+void CariBiodata()
+{
+    cout<<endl;
+    int NIM;
+    cout<<"masukan NIM: "; cin>>NIM;
+    
+    long listSize = listData.size();
+    biodata arrData[listData.size()];
+    copy(listData.begin(), listData.end(), arrData);
+    
+    for (int i = 0; i < listSize ; i++) {
+        if(arrData[i].NIM == NIM)
+        {
+            cout<<"-------------------------------------------------------------------------------"<<endl;
+            cout<<"NIM"<<string (10, ' ' )<<"Nama"<<string (arrData[i].nama.length() - 1, ' ' )<<"Rata tugas   "<<" UTS    "<<" UAS    "<<"Akhir   "<<"Huruf"<<endl;
+            cout<<"-------------------------------------------------------------------------------"<<endl;
+            ShowBio(arrData,i,arrData[i].nama.length());
+            break;
+        }
+        else
+        {
+            if(i == listSize-1)
+                cout<<"Data tidak ada";
+        }
+    }
+    menu();
+}
+
+void ShowBio(biodata arrData[],int i,long longestName)
+{
+    
+    biodata currentData = arrData[i];
+    float UTS = arrData[i].UTS; float UAS = arrData[i].UAS;
+    
+    float arrTugas[currentData.listTugas.size()];
+    copy(currentData.listTugas.begin(), currentData.listTugas.end(), arrTugas);
+    int listsize = (int)currentData.listTugas.size();
+    
+    float rataTugas = 0;
+    for (int x = 0; x < listsize; x++) {
+        rataTugas += arrTugas[x];
+    }
+    rataTugas *= 1.0/(float)listsize;
+    
+    float akhir = (25.0/100.0) * (rataTugas + UTS) + (50.0/100.0) * UAS;
+    char huruf;
+    if(akhir >= 90) huruf = 'A';
+    if(akhir >= 79 || akhir < 90) huruf = 'A';
+    if(akhir >= 69 || akhir < 79) huruf = 'A';
+    if(akhir >= 59 || akhir < 69) huruf = 'A';
+    else huruf = 'A';
+    
+    cout<<arrData[i].NIM<<"   "<<arrData[i].nama<< string (longestName - arrData[i].nama.length()+3, ' ' )<<rataTugas<<string (8, ' ' )<<arrData[i].UTS<<"   "<<arrData[i].UAS<<"   "<<akhir<<"     "<<huruf<<endl;
+}
