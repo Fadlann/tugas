@@ -3,6 +3,7 @@
 #include <array>
 #include <string>
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 struct biodata
@@ -21,11 +22,12 @@ void LihatBiodata();
 void CariBiodata();
 void ShowBio(biodata arrData[],int i,long longestName);
 int additionalSpacing(float number);
+void createTxt();
 
 int main(int argc, char** argv)
 {
-    std::cout << std::fixed;
-    std::cout << std::setprecision(2);
+    cout << std::fixed;
+    cout << std::setprecision(2);
     menu();
 }
 
@@ -65,6 +67,7 @@ void menu()
             cout<<endl;
             break;
         case 4:
+            createTxt();
             break;
        default :
               cout<<"Mohon pilih piilhan yang tertera saja"<<endl;
@@ -199,7 +202,6 @@ void CariBiodata()
 
 void ShowBio(biodata arrData[],int i,long longestName)
 {
-    
     biodata currentData = arrData[i];
     float UTS = arrData[i].UTS; float UAS = arrData[i].UAS;
     
@@ -231,4 +233,43 @@ int additionalSpacing(float number)
         return 2;
     else
         return 0;
+}
+
+void createTxt()
+{
+    ofstream latihan ("nilaiMahasiswa.txt");
+    latihan << fixed;
+    latihan << setprecision(2);;
+    cout<<endl;
+    biodata arrData[listData.size()];
+    copy(listData.begin(), listData.end(), arrData);
+    long longestName = findLongest(listData.size(),arrData);
+    latihan<<"-------------------------------------------------------------------------------"<<endl;
+    latihan<<"NIM"<<string (10, ' ' )<<"Nama"<<string (longestName-1, ' ' )<<"Rata tugas   "<<"UTS     "<<"UAS     "<<"Akhir   "<<"Huruf"<<endl;
+    latihan<<"-------------------------------------------------------------------------------"<<endl;
+    for (int i = 0; i < listData.size(); i++) {
+        biodata currentData = arrData[i];
+        float UTS = arrData[i].UTS; float UAS = arrData[i].UAS;
+        
+        float arrTugas[currentData.listTugas.size()];
+        copy(currentData.listTugas.begin(), currentData.listTugas.end(), arrTugas);
+        int listsize = (int)currentData.listTugas.size();
+        
+        float rataTugas = 0;
+        for (int x = 0; x < listsize; x++) {
+            rataTugas += arrTugas[x];
+        }
+        rataTugas *= 1.0/(float)listsize;
+        
+        float akhir = (25.0/100.0) * (rataTugas + UTS) + (50.0/100.0) * UAS;
+        char huruf;
+        if(akhir >= 90) huruf = 'A';
+        else if(akhir >= 79 && akhir < 90) huruf = 'B';
+        else if(akhir >= 69 && akhir < 79) huruf = 'C';
+        else if(akhir >= 59 && akhir < 69) huruf = 'D';
+        else huruf = 'E';
+        latihan<<arrData[i].NIM<<string(3, ' ' )<<arrData[i].nama<<string(longestName - arrData[i].nama.length()+3,' ')<<rataTugas<<string(7+additionalSpacing(rataTugas), ' ' )<<arrData[i].UTS<<string(2+additionalSpacing(arrData[i].UTS), ' ' )<<arrData[i].UAS<<string(2+additionalSpacing(arrData[i].UAS), ' ' )<<akhir<<string(4+additionalSpacing(akhir), ' ' )<<huruf<<endl;
+    }
+    cout << "Data telah selesai direkam…."<< endl;
+    latihan.close();
 }
