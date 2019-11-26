@@ -1,0 +1,269 @@
+#include <iostream>
+#include <list>
+#include <array>
+#include <string>
+#include <iomanip>
+#include <fstream>
+
+using namespace std;
+struct biodata
+{
+    
+    string NIM;
+    string nama;
+    list<float> listTugas;
+    float UTS;
+    float UAS;
+    float rataTugas;
+    float akhir;
+    char huruf;
+};
+list<biodata> listData;
+void menu();
+long findLongest(long size,biodata arr[]);
+void InputBiodata();
+void CariBiodata();
+void ShowBio();
+int additionalSpacing(float number);
+long longestName;
+void createTxt();
+
+int main(int argc, char** argv)
+{
+    cout << fixed;
+    cout << setprecision(2);
+    menu();
+}
+
+long findLongest(long size,biodata arr[])
+{
+    long wordsCount = 0;
+    for (int i = 0; i < size; i++) {
+        if(arr[i].nama.length() > wordsCount) wordsCount = arr[i].nama.length();
+    }
+    return wordsCount;
+}
+
+void menu()
+{
+    cout<<endl;
+    cout<<"----------------------------"<<endl;
+    cout<<"\tMenu"<<endl;
+    cout<<"----------------------------"<<endl;
+    cout<<"1. Input Biodata"<<endl;
+    cout<<"2. Lihat Biodata"<<endl;
+    cout<<"3. Cari Biodata"<<endl;
+    cout<<"4. Exit"<<endl;
+    cout<<"----------------------------"<<endl;
+    back:
+    int pil;
+    cout<<"masukan pilihan [1..4]: ";cin>>pil;
+    switch(pil)
+    {
+        case 1:
+            InputBiodata();
+            break;
+        case 2:
+            ShowBio();
+            break;
+        case 3:
+            CariBiodata();
+            cout<<endl;
+            break;
+        case 4:
+            cout<<"Byeeeeeee"<<endl;
+            break;
+       default :
+            cout<<"Mohon pilih piilhan yang tertera saja"<<endl;
+            goto back;
+            break;
+    }
+}
+
+void InputBiodata()
+{
+    cout<<endl;
+    bool tambahData;
+    do
+    {
+        back:
+        int nomorTugas = 0;
+        bool lanjut = true;
+        biodata biodata;
+        cin.ignore();
+        NIMinput:
+        cout<<"Masukin NIM: "; getline(cin, biodata.NIM);
+        if(biodata.NIM.length() != 10)
+        {
+            cout<<"NIM harus memiliki 10 karakter"<<endl;
+            goto NIMinput;
+        }
+        cout<<"Masukin Nama: "; getline(cin,biodata.nama);
+        do
+        {
+            nomorTugas++;
+            string output = nomorTugas == 1?"Masukin nilai tugas [tekan X bila tidak ada tugas]":"ada nilai tugas lagi? [tekan X bila tidak ada tugas]";
+            cout<<output<<endl;
+            
+            string input;
+            cout<<"Nilai Tugas "<<nomorTugas<<": "; getline(cin,input);
+            
+            if(input == "X"||input == "x") lanjut = false;
+            else
+            {
+                biodata.listTugas.push_back(stof(input));
+            }
+        }while(lanjut);
+        
+        cout<<"Masukin nilai UTS: "; cin>>biodata.UTS;
+        cout<<"Masukin nilai UAS: "; cin>>biodata.UAS;
+        ask:
+        cout<<"Data yang dimasukan benar?[y/n] :";
+        char input;
+        cin>>input;
+        switch(tolower(input))
+        {
+           case 'y':
+                listData.push_back(biodata);
+                break;
+           case 'n':
+                biodata.listTugas.clear();
+                cout<<endl;
+                goto back;
+                break;
+           default :
+                cout<<"Mohon pilih y atau n saja"<<endl;
+                goto ask;
+                break;
+        }
+        ask2:
+        cout<<"Ada data lagi?[y/n] :";
+        char input2;
+        cin>>input2;
+        switch(tolower(input2))
+        {
+            case 'y':
+                tambahData = true;
+                cout<<endl;
+                break;
+            case 'n':
+                tambahData = false;
+                break;
+            default :
+              cout<<"Mohon pilih y atau n saja"<<endl;
+              goto ask2;
+              break;
+        }
+    }
+    while(tambahData);
+    createTxt();
+    menu();
+}
+
+void CariBiodata()
+{
+    cout<<endl;
+    cout<<"-----------------------------------"<<endl;
+    cout<<"\tCari Data Mahasiswa"<<endl;
+    cout<<"-----------------------------------"<<endl;
+    string NIM;
+    cin.ignore();
+    cout<<"masukkan NIM: "; getline(cin,NIM);
+    ifstream latihan("nilaiMahasiswa.txt");
+    string line;
+    string line2;
+    // open file to search
+    if(latihan.is_open()) {
+        while(getline(latihan, line))
+        {
+            unsigned int curLine = 0;
+            string statement;
+            while(getline(latihan, line))
+            {
+                curLine++;
+                if (line.find(NIM, 0) != string::npos)
+                {
+                cout<<"-------------------------------------------------------------------------------"<<endl;
+                    cout<<"NIM"<<string (11, ' ' )<<"Nama"<<string (longestName, ' ' )<<"Rata tugas    "<<"UTS       "<<"UAS      "<<"Akhir    "<<"Huruf"<<endl;
+                cout<<"-------------------------------------------------------------------------------"<<endl;
+                    statement = "null";
+                    cout<<line<<"\n";
+                    break;
+                } else
+                {
+                    statement = "data yang dicari tidak ada\n";
+                }
+            }
+            if(statement != "null") cout<<statement;
+        }
+        latihan.close();
+    }
+    menu();
+}
+
+void ShowBio()
+{
+    cout<<endl;
+    const int MAX=80;
+    char buffer[MAX+1];
+    ifstream latihan ("nilaiMahasiswa.txt");
+    while (latihan)
+    {
+        latihan.getline(buffer,MAX);
+        cout << buffer << endl;
+    }
+    latihan.close();
+    menu();
+}
+
+int additionalSpacing(float number)
+{
+    if(number >= 10 && number <100)
+        return 1;
+    else if(number < 10)
+        return 2;
+    else
+        return 0;
+}
+
+void createTxt()
+{
+    ofstream latihan ("nilaiMahasiswa.txt");
+    latihan << fixed;
+    latihan << setprecision(2);;
+    cout<<endl;
+    biodata arrData[listData.size()];
+    copy(listData.begin(), listData.end(), arrData);
+    longestName = findLongest(listData.size(),arrData);
+    latihan<<"-------------------------------------------------------------------------------"<<endl;
+    latihan<<"NIM"<<string (11, ' ' )<<"Nama"<<string (longestName, ' ' )<<"Rata tugas    "<<"UTS     "<<"UAS      "<<"Akhir    "<<"Huruf"<<endl;
+    latihan<<"-------------------------------------------------------------------------------"<<endl;
+    for (int i = 0; i < listData.size(); i++) {
+        biodata currentData = arrData[i];
+        float UTS = arrData[i].UTS; float UAS = arrData[i].UAS;
+        
+        float arrTugas[currentData.listTugas.size()];
+        copy(currentData.listTugas.begin(), currentData.listTugas.end(), arrTugas);
+        int listsize = (int)currentData.listTugas.size();
+        
+        float rataTugas = 0;
+        for (int x = 0; x < listsize; x++) {
+            rataTugas += arrTugas[x];
+        }
+        rataTugas *= 1.0/(float)listsize;
+        
+        float akhir = (25.0/100.0) * (rataTugas + UTS) + (50.0/100.0) * UAS;
+        char huruf;
+        if(akhir >= 90) huruf = 'A';
+        else if(akhir >= 79 && arrData[i].akhir < 90) huruf = 'B';
+        else if(akhir >= 69 && arrData[i].akhir < 79) huruf = 'C';
+        else if(akhir >= 59 && arrData[i].akhir < 69) huruf = 'D';
+        else huruf = 'E';
+        latihan<<arrData[i].NIM<<string(4, ' ' )<<arrData[i].nama<<string(longestName - arrData[i].nama.length()+4,' ')<<rataTugas<<string(8+additionalSpacing(rataTugas), ' ' )<<UTS<<string(2+additionalSpacing(UTS), ' ' )<<UAS<<string(3+additionalSpacing(UAS), ' ' )<<akhir<<string(5+additionalSpacing(akhir), ' ' )<<huruf<<endl;
+        arrData[i].rataTugas = rataTugas;
+        arrData[i].huruf = huruf;
+        arrData[i].akhir = akhir;
+    }
+    cout << "Data telah selesai direkam…."<< endl;
+    latihan.close();
+}
