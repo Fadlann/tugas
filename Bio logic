@@ -1,0 +1,131 @@
+void createBio()
+{
+    system("clear");
+    bool tambahData;
+    do
+    {
+        biodata biodata;
+        biodata.nilaiDiTerima = true;
+        biodata.jumlahTugas = 0;
+        cin.ignore();
+        
+        //Input NIM
+        NIMinput:
+        cout<<"Masukin NIM: "; getline(cin, biodata.NIM);
+        if(biodata.NIM.length() != 10)
+        {
+            cout<<"NIM harus memiliki 10 karakter"<<"\r\n"<<flush;;
+            goto NIMinput;
+        }
+        
+        //Input Nama
+        inputNama:
+        cout<<"Masukin Nama: "; getline(cin,biodata.nama);
+        if(biodata.nama.length()<1)
+        {
+            goto inputNama;
+        }
+        
+        //Input mata kuliah
+        inputMatkul:
+        cout<<"Masukin Matakuliah: "; getline(cin,biodata.mataKuliah);
+        if(biodata.mataKuliah.length()<1)
+        {
+            goto inputMatkul;
+        }
+        
+        //Input sks, jumlah absen, nilai tugas, UTS dan UAS
+        cout<<"Masukin sks: "; cin>>biodata.sks;
+        masukinAbsen:
+        cout<<"Masukin jumlah absen: "; cin>>biodata.jumlahAbsen;
+        if(biodata.jumlahAbsen<=11)
+        {
+            cout<<"nilai absen yang dimasukan tidak memenuhi kriteria , data yang anda masukan sudah benar[y/n]? ";
+            ask:
+            char input;
+            cin>>input;
+            switch(tolower(input))
+            {
+               case 'y':
+                    cout<<"\r\n"<<flush;
+                    biodata.nilaiDiTerima = false;
+                    break;
+               case 'n':
+                    cout<<"\r\n"<<flush;
+                    goto masukinAbsen;
+                    break;
+               default :
+                    cout<<"Mohon pilih y atau n saja"<<"\r\n"<<flush;;
+                    goto ask;
+                    break;
+            }
+        }
+        cin.ignore();
+        bool inputNilaiTugas = true;
+        do
+        {
+            biodata.jumlahTugas++;
+            string output = biodata.jumlahTugas == 1?"Masukin nilai tugas":"ada nilai tugas lagi? [tekan X bila tidak ada tugas]";
+            cout<<output<<"\r\n"<<flush;;
+            
+            string input;
+            cout<<"Nilai Tugas "<<biodata.jumlahTugas<<": "; getline(cin,input);
+            
+            if(biodata.jumlahTugas > 1 &&(input == "X"||input == "x")) inputNilaiTugas = false;
+            else
+            {
+                biodata.arrTugas[biodata.jumlahTugas-1] = stof(input);
+            }
+        }while(inputNilaiTugas);
+        
+        cout<<"Masukin nilai UTS: "; cin>>biodata.UTS;
+        cout<<"Masukin nilai UAS: "; cin>>biodata.UAS;
+        
+        //Mengecek kebenaran data
+        kebenaranData:
+        cout<<"Data yang dimasukan benar?[y/n] :";
+        char input;
+        cin>>input;
+        switch(tolower(input))
+        {
+           case 'y':
+                arrData[jumlahData] = biodata;
+                break;
+           case 'n':
+                fill_n(biodata.arrTugas, 100, 0);
+                goto kebenaranData;
+                break;
+           default :
+                cout<<"Mohon pilih y atau n saja"<<"\r\n"<<flush;
+                goto ask;
+                break;
+        }
+        jumlahData++;
+        
+        ask2:
+        cout<<"Ada data lagi?[y/n] :";
+        char input2;
+        cin>>input2;
+        switch(tolower(input2))
+        {
+            case 'y':
+                tambahData = true;
+                cout<<endl;
+                break;
+            case 'n':
+                tambahData = false;
+                break;
+            default :
+              cout<<"Mohon pilih y atau n saja"<<"\r\n"<<flush;
+              goto ask2;
+              break;
+        }
+        if(!biodata.nilaiDiTerima)
+        {
+            nilaiTidakDiTerima(biodata);
+        }
+    }
+    while(tambahData);
+    //createTxt();
+    menu();
+}
