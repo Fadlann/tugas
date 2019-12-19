@@ -1,0 +1,634 @@
+#include <iostream>
+#include <ncurses.h>
+#include <math.h>
+#include <array>
+#include <fstream>
+#include <list>
+
+
+using namespace std;
+
+struct biodata
+{
+    string NIM;
+    string nama;
+    float arrTugas[100];
+    float UTS;
+    float UAS;
+    string mataKuliah;
+    int sks;
+    int jumlahAbsen;
+    int jumlahTugas;
+    bool nilaiDiTerima;
+};
+
+biodata arrData[100];
+int jumlahData;
+
+// additional functions for project
+
+int yMax, xMax;
+void warning()
+{
+    // warning for keyarrow
+    getmaxyx(stdscr, yMax, xMax);
+    WINDOW* arrowWin = newwin(4, 20, yMax - 4, xMax - 20);
+    box(arrowWin, 0, 0);
+    mvwprintw(arrowWin, 1, 1, "Key left = delete");
+    mvwprintw(arrowWin, 2, 1, "Key down = enter");
+    refresh();
+    wrefresh(arrowWin);
+    
+    // warning for resizing
+    WINDOW* resizeWin = newwin(5, 20, yMax - 9, xMax - 20);
+    box(resizeWin, 0, 0);
+    mvwprintw(resizeWin, 1, 1, "resize window");
+    mvwprintw(resizeWin, 2, 1, "dapat menghapus");
+    mvwprintw(resizeWin, 3, 1, "output terminal");
+
+    refresh();
+    wrefresh(resizeWin);
+}
+
+string getstring()
+{
+    string input;
+
+    // let the terminal do the line editing
+    echo();
+    nocbreak();
+    
+    // this reads from buffer after <ENTER>, not "raw"
+    // so any backspacing etc. has already been taken care of
+    int ch = getch();
+    while ( ch != '\n' )
+    {
+        input.push_back(ch);
+        ch = getch();
+    }
+
+    // restore cbreak / echo settings
+    noecho();
+    cbreak();
+
+    return input;
+}
+
+bool is_number(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(),
+        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+}
+
+void createHeader(string name, int width, int start_x){
+    // menu header config
+    int height, start_y;
+    height = 3;
+    start_y = 0;
+    int n = (int)name.length();
+    char char_array[n + 1];
+    strcpy(char_array, name.c_str());
+
+    // create header
+    WINDOW* headerWin = newwin(height, width, start_y, start_x);
+    box(headerWin,0,0);
+    mvwprintw(headerWin, 1, (width/2)-floor((double)name.length()/2.0), char_array);
+    refresh();
+    wrefresh(headerWin);
+    move(4,0);
+    refresh();
+}
+
+WINDOW* createTable(int width, int start_x)
+{
+    int height = jumlahData+2;
+    int start_y = 3;
+    
+    WINDOW* table = newwin(height, width, start_y, start_x);
+    box(table,0,0);
+    refresh();
+    wrefresh(table);
+    return table;
+}
+
+WINDOW* createTable(int width, int start_x, int height)
+{
+    int start_y = 3;
+    
+    WINDOW* table = newwin(height, width, start_y, start_x);
+    box(table,0,0);
+    refresh();
+    wrefresh(table);
+    return table;
+}
+
+// functions for UAS
+void menu();
+void createBio();
+void showBio();
+void findBio();
+void allBioFormat();
+void specificBioFormat(string NIM);
+float CariRataTugas(biodata biodata);
+float CariNilaiAkhir(biodata biodata, float rataTugas);
+string CariHuruf(float akhir);
+void createTxt();
+
+int main(int argc, const char * argv[]) {
+    // initialization
+    initscr();
+    noecho();
+    cbreak();
+    
+    // go to menu
+    //menu();
+    menu();
+    
+    // end the program
+    endwin();
+    return 0;
+}
+
+void menu()
+{
+    clear();
+    // create menu header
+    createHeader("Menu", 16,0);
+    
+    // create window for menu input
+    WINDOW* menuWin = newwin(6, 18, 3, 0);
+    box(menuWin, 0, 0);
+    refresh();
+    wrefresh(menuWin);
+    
+    // arrow key allowed
+    keypad(menuWin, true);
+    keypad(initscr(), true);
+    
+    // choices
+    array<string, 4> choices = {"1. Buat Biodata", "2. Lihat Biodata", "3. Cari Biodata", "4. Exit"};
+    int choice;
+    int highlight = 0;
+    int maxChoiceNum = choices.size();
+    while(1)
+    {
+        for (int i = 0; i < maxChoiceNum; i++) {
+            if(i == highlight)
+                wattron(menuWin, A_REVERSE);
+            mvwprintw(menuWin, i+1, 1, choices[i].c_str());
+            wattroff(menuWin, A_REVERSE);
+        }
+        choice = wgetch(menuWin);
+        
+        switch (choice) {
+            case KEY_UP:
+                highlight--;
+                if(highlight < 0)
+                    highlight = maxChoiceNum-1;
+                break;
+            case KEY_DOWN:
+                highlight++;
+                if(highlight > maxChoiceNum-1)
+                    highlight = 0;
+                break;
+            default:
+                break;
+        }
+        if(choice == 10)
+            break;
+    }
+    
+    switch (highlight) {
+        case 0:
+            createBio();
+            break;
+        case 1:
+            showBio();
+            break;
+        case 2:
+            findBio();
+            break;
+        case 3:
+            break;
+        default:
+            break;
+    }
+}
+
+void createBio()
+{
+    bool tambahData;
+    do
+    {
+        clear();
+        
+        // warning for keyarrow
+        warning();
+        
+        createHeader("Isi Biodata", 16, 0);
+        
+        pengisianData:
+        biodata biodata;
+        biodata.nilaiDiTerima = true;
+        biodata.jumlahTugas = 0;
+        
+        // input NIM
+        NIMinput:
+        printf("\rMasukin NIM: "); refresh(); biodata.NIM = getstring();
+        if(biodata.NIM.length() != 10)
+        {
+            printf("\rNIM harus memiliki 10 karakter\r\n"); refresh();;
+            goto NIMinput;
+        }
+        
+        // cek apakah data sudah ada
+        bool NIMAlreadyInData = false;
+        int index = 0;
+        for (int i = 0; i < jumlahData; i++) {
+            NIMAlreadyInData = biodata.NIM == arrData[i].NIM;
+            index = i;
+            if(NIMAlreadyInData)
+                break;
+        }
+        
+        // input Nama bila data belum ada
+        if(!NIMAlreadyInData)
+        {
+            inputNama:
+            printf("Masukin Nama: "); refresh(); biodata.nama = getstring();
+            if(biodata.nama.length()<=1)
+            {
+                printf("\rNama setidaknya memiliki dua karakter\r\n"); refresh();;
+                goto inputNama;
+            }
+        } else
+        {
+            biodata.nama = arrData[index].nama;
+            printf("Masukin Nama: %s\n", biodata.nama.c_str()); refresh();
+        }
+        
+        // input mata kuliah
+        inputMatkul:
+        printf("\rMasukin Matakuliah: "); refresh(); biodata.mataKuliah = getstring();
+        if(biodata.mataKuliah.length()<=1)
+        {
+            printf("\rMata kuliah setidaknya memiliki dua karakter\r\n"); refresh();;
+            goto inputMatkul;
+        }
+        
+        // input sks
+        inputSks:
+        printf("\rMasukin sks: "); refresh(); string sks = getstring();
+        if(is_number(sks))
+            biodata.sks = stoi(sks);
+        else{
+            printf("\rMohon isi angka\n");
+            goto inputSks;
+        }
+        if(biodata.sks<10) printf("\r"); refresh();
+        
+        // input absen
+        masukinAbsen:
+        printf("\rMasukin jumlah absen: "); refresh(); string absen = getstring();
+        if(is_number(absen))
+            biodata.jumlahAbsen = stoi(absen);
+        else{
+            printf("\rMohon isi angka\n");
+            goto masukinAbsen;
+        }
+        if(biodata.jumlahAbsen<10) printf("\r"); refresh();
+        if(biodata.jumlahAbsen<=11)
+        {
+            printf("nilai absen yang dimasukan tidak memenuhi kriteria , data yang anda masukan sudah benar[y/n]? "); refresh(); string input = getstring();
+            ask:
+            if(input == "y" || input == "Y"){
+                printf("\r");refresh();
+                biodata.nilaiDiTerima = false;
+            } else if (input == "N" || input == "n"){
+                printf("\r");refresh();
+                goto masukinAbsen;
+            }
+            else
+            {
+                printf("Mohon pilih y atau n saja"); refresh();
+                goto ask;
+            }
+        }
+        
+        //Input nilai tugas
+        bool inputNilaiTugas = true;
+        do
+        {
+            biodata.jumlahTugas++;
+            inputTugas:
+            string output = biodata.jumlahTugas == 1?"\rMasukin nilai tugas":"\rada nilai tugas lagi? [tekan X bila tidak ada tugas]";
+            printf("%s", output.c_str()); refresh();
+            
+            printf("\r\nNilai Tugas %d: ",biodata.jumlahTugas); refresh(); string input = getstring();
+                
+            if(input.length() <= 1) printf("\r"); refresh();
+            if(biodata.jumlahTugas > 1 && (input == "X"||input == "x"))
+                inputNilaiTugas = false;
+            else
+            {
+                if(is_number(input))
+                    biodata.arrTugas[biodata.jumlahTugas-1] = stof(input);
+                else{
+                    printf("\rMohon isi angka, setidaknya ada satu nilai\n");
+                    goto inputTugas;
+                }
+            }
+        }while(inputNilaiTugas);
+        
+        // input nilai UTS
+        inputUTS:
+        printf("\rMasukin nilai UTS: "); refresh(); string uts = getstring();
+        if (is_number(uts))
+            biodata.UTS = stoi(uts);
+        else{
+            printf("\rMohon isi angka \n");
+            goto inputUTS;
+        }
+        
+        // input nilai UAS
+        inputUAS:
+        if(biodata.UTS < 10) printf("\r"); refresh();
+        printf("\rMasukin nilai UAS: "); refresh(); string UAS = getstring();
+        if (is_number(UAS))
+            biodata.UAS = stoi(UAS);
+        else{
+            printf("\rMohon isi angka \n");
+            goto inputUAS;
+        }
+        if(biodata.UAS < 10) printf("\r"); refresh();
+        
+        if(!biodata.nilaiDiTerima)
+        {
+            // Tugas dan lainnya tidak diterima
+            biodata.jumlahTugas = 0;
+            biodata.UTS = 0;
+            biodata.UAS = 0;
+        }
+        
+        //Mengecek kebenaran data
+        askKebenaranData:
+        printf("\rData yang dimasukan benar?[y/n] :"); refresh(); string input = getstring();
+        if(input == "y" || input == "Y"){
+            arrData[jumlahData] = biodata;
+        } else if (input == "N" || input == "n"){
+            clear();
+            goto pengisianData;
+        }
+        else{
+            printf("\rMohon pilih y atau n \n"); refresh();
+            goto askKebenaranData;
+        }
+        
+        jumlahData++;
+        
+        //Cek tambah data
+        askTambahData:
+        printf("\rAda data lagi?[y/n] :"); refresh(); string input2 = getstring();
+        if(input2 == "y" || input2 == "Y"){
+            printf("\n");
+            tambahData = true;
+        } else if (input2 == "N" || input2 == "n")
+            tambahData = false;
+        else
+        {
+            printf("\rMohon pilih y atau n\n"); refresh();
+            goto askKebenaranData;
+        }
+    }
+    while(tambahData);
+    createTxt();
+    allBioFormat();
+    menu();
+}
+
+void showBio()
+{
+    clear();
+    allBioFormat();
+    menu();
+}
+
+void findBio()
+{
+    clear();
+    warning();
+    refresh();
+    printf("\rMasukkan NIM: "); refresh(); string NIM = getstring();
+    specificBioFormat(NIM);
+}
+
+void allBioFormat()
+{
+    clear();
+    
+    int NIMWidth = 13; int NIMPos = 0;
+    int namaWidth = 35; int namaPos = NIMWidth+NIMPos;
+    int matkulWidth = 35; int matkulPos = namaWidth + namaPos;
+    int SKSWidth = 7;int SKSPos = matkulWidth + matkulPos;
+    int akhirWidth = 9; int akhirPos = SKSWidth + SKSPos;
+    int hurufWidth = 14; int hurufPos = akhirWidth + akhirPos;
+    
+    createHeader("NIM", NIMWidth, NIMPos); createHeader("Nama", namaWidth, namaPos); createHeader("Mata Kuliah", matkulWidth, matkulPos);
+    createHeader("SKS", SKSWidth, SKSPos); createHeader("Akhir", akhirWidth, akhirPos); createHeader("Huruf", hurufWidth, hurufPos);
+    
+    WINDOW* NIMWin = createTable(NIMWidth, NIMPos); WINDOW* namaWin = createTable(namaWidth, namaPos);
+    WINDOW* matkulWin = createTable(matkulWidth, matkulPos); WINDOW* SKSWin = createTable(SKSWidth, SKSPos);
+    WINDOW* akhirWin = createTable(akhirWidth, akhirPos); WINDOW* hurufWin = createTable(hurufWidth, hurufPos);
+    
+    
+    for (int i = 0; i < jumlahData; i++) {
+        biodata currentData = arrData[i];
+        int posY = i+1;
+        float rataTugas = CariRataTugas(currentData);
+        float nilaiAkhir = CariNilaiAkhir(currentData, rataTugas);
+        string huruf = CariHuruf(nilaiAkhir);
+        mvwprintw(NIMWin, posY, 1, "%s",currentData.NIM.c_str()); wrefresh(NIMWin);
+        mvwprintw(namaWin, posY, 1, "%s", currentData.nama.c_str()); wrefresh(namaWin);
+        mvwprintw(matkulWin, posY, 1, "%s", currentData.mataKuliah.c_str()); wrefresh(matkulWin);
+        mvwprintw(SKSWin, posY, 1, "%d", currentData.sks); wrefresh(SKSWin);
+        mvwprintw(akhirWin, posY, 1, "%.2f", nilaiAkhir); wrefresh(akhirWin);
+        mvwprintw(hurufWin, posY, 1, "%s", huruf.c_str()); wrefresh(hurufWin);
+    }
+    getch();
+}
+
+void specificBioFormat(string NIM)
+{
+    clear();
+    
+    bool nimFound = false;
+    list<int> dataList;
+    
+    for (int i = 0; i < jumlahData; i++) {
+        biodata currentData = arrData[i];
+        if(NIM == currentData.NIM)
+        {
+            nimFound = true;
+            dataList.push_front(i);
+        }
+    }
+    
+    if(nimFound == false){
+        refresh();
+        printf("\rData tidak ada"); refresh();
+        getch();
+        menu();
+        return;
+    }
+    
+    int NIMWidth = 13; int NIMPos = 0;
+    int namaWidth = 35; int namaPos = NIMWidth+NIMPos;
+    int matkulWidth = 35; int matkulPos = namaWidth + namaPos;
+    int SKSWidth = 7;int SKSPos = matkulWidth + matkulPos;
+    int absenWidth = 9; int absenPos = SKSWidth + SKSPos;
+    int rataWidth = 14; int rataPos = absenWidth + absenPos;
+    int UTSWidth = 9; int UTSPos = rataWidth + rataPos;
+    int UASWidth = 9; int UASPos = UTSWidth + UTSPos;
+    
+    createHeader("NIM", NIMWidth, NIMPos); createHeader("Nama", namaWidth, namaPos); createHeader("Mata Kuliah", matkulWidth, matkulPos);
+    createHeader("SKS", SKSWidth, SKSPos); createHeader("Absen", absenWidth, absenPos); createHeader("Rata tugas", rataWidth, rataPos);
+    createHeader("UTS", UTSWidth, UTSPos); createHeader("UAS", UASWidth, UASPos);
+    
+    int dataCount = (int)dataList.size();
+    int height = dataCount + 2;
+    WINDOW* NIMWin = createTable(NIMWidth, NIMPos, height);
+    WINDOW* namaWin = createTable(namaWidth, namaPos, height);
+    WINDOW* matkulWin = createTable(matkulWidth, matkulPos, height);
+    WINDOW* SKSWin = createTable(SKSWidth, SKSPos, height);
+    WINDOW* absenWin = createTable(absenWidth, absenPos, height);
+    WINDOW* rataWin = createTable(rataWidth, rataPos, height);
+    WINDOW* UTSWin = createTable(UTSWidth, UTSPos, height);
+    WINDOW* UASWin = createTable(UASWidth, UASPos, height);
+    
+    int posY = 0;
+    
+    for (auto const& i : dataList) {
+        biodata currentData = arrData[i];
+
+        posY += 1;
+        float rataTugas = CariRataTugas(currentData);
+        float nilaiAkhir = CariNilaiAkhir(currentData, rataTugas);
+        string huruf = CariHuruf(nilaiAkhir);
+        mvwprintw(NIMWin, posY, 1, "%s",currentData.NIM.c_str()); wrefresh(NIMWin);
+        mvwprintw(namaWin, posY, 1, "%s", currentData.nama.c_str()); wrefresh(namaWin);
+        mvwprintw(matkulWin, posY, 1, "%s", currentData.mataKuliah.c_str()); wrefresh(matkulWin);
+        mvwprintw(SKSWin, posY, 1, "%d", currentData.sks); wrefresh(SKSWin);
+        mvwprintw(absenWin, posY, 1, "%d", currentData.jumlahAbsen); wrefresh(absenWin);
+        mvwprintw(rataWin, posY, 1, "%.2f", rataTugas); wrefresh(rataWin);
+        mvwprintw(UTSWin, posY, 1, "%.2f", currentData.UTS); wrefresh(UTSWin);
+        mvwprintw(UASWin, posY, 1, "%.2f", currentData.UAS); wrefresh(UASWin);
+    }
+    getch();
+    menu();
+}
+
+float CariRataTugas(biodata biodata)
+{
+    float jumlahTugas = (float)biodata.jumlahTugas;
+    float rataTugas = 0.f;
+    for (int x = 0; x < (int)jumlahTugas; x++) {
+        rataTugas += biodata.arrTugas[x];
+    }
+    rataTugas *= 1.0/(jumlahTugas);
+    return rataTugas;
+}
+
+float CariNilaiAkhir(biodata biodata, float rataTugas)
+{
+    float akhir = (0.1f*biodata.jumlahAbsen + 0.2f* rataTugas
+        + 0.3f*biodata.UTS + 0.4f*biodata.UAS);
+    return akhir;
+}
+
+string CariHuruf(float akhir)
+{
+    string huruf;
+    if(akhir >= 90) huruf = "A";
+    else if(akhir >= 79 && akhir < 90) huruf = "B";
+    else if(akhir >= 69 && akhir < 79) huruf = "C";
+    else if(akhir >= 59 && akhir < 69) huruf = "D";
+    else huruf = "E";
+    return huruf;
+}
+
+/* PENJELASAN
+ dibawah ini tidak memakai ncurses karena engga tau cara write make output ncurses
+ jadinya buat function sendiri buat spacing dkk.
+ karenanya bagian dibawah ini cukup berantakan.
+ */
+
+long SpasiAngka(float number)
+{
+    if(number >= 10 && number <100)
+        return 1;
+    else if(number < 10)
+        return 2;
+    else
+        return 0;
+}
+
+long SpasiTerpanjang(int x)
+{
+    long wordsCount = 0;
+    for (int i = 0; i < jumlahData; i++) {
+        if(x == 0)
+        {
+            if(arrData[i].nama.length() > wordsCount) wordsCount = arrData[i].nama.length();
+        }
+        else{
+            if(arrData[i].mataKuliah.length() > wordsCount) wordsCount = arrData[i].mataKuliah.length();
+        }
+    }
+    return wordsCount;
+}
+
+void createTxt()
+{
+    int jlhSpasiNamaTerpanjang = (int)SpasiTerpanjang(0);
+    int jlhSpasiTopMatkul = (int)SpasiTerpanjang(1)-8>0?(int)SpasiTerpanjang(1)-8:3;
+    
+    ofstream UAS1 ("nilaiMahasiswa1.txt");
+    UAS1 << fixed;
+    UAS1 << setprecision(2);
+    
+    UAS1<<"-------------------------------------------------------------------------------"<<endl;
+    UAS1<<"NIM"<<string(10,' ')<<"Nama"<<string(jlhSpasiNamaTerpanjang,' ')<<"Mata Kuliah"<<string(jlhSpasiTopMatkul,' ')<<"SKS"<<string(3,' ')<<"Akhir"<<string(3,' ')<<"Huruf"<<endl;
+    UAS1<<"-------------------------------------------------------------------------------"<<endl;
+
+    for (int i = 0; i < jumlahData; i++) {
+        biodata currentData = arrData[i];
+        
+        float rataTugas = CariRataTugas(currentData);
+        float nilaiAkhir = CariNilaiAkhir(currentData, rataTugas);
+        string huruf = CariHuruf(nilaiAkhir);
+        
+        int lengthNama = (int)arrData[i].nama.length();
+        int lengthMatkul = (int)arrData[i].mataKuliah.length();
+        int spasiMatkul = (int)SpasiTerpanjang(1)-lengthMatkul>=0? (int)SpasiTerpanjang(1)-lengthMatkul+3:14-lengthMatkul;
+        
+        UAS1<<arrData[i].NIM<<string(3,' ')<<currentData.nama<<string(jlhSpasiNamaTerpanjang-lengthNama+4,' ')<<currentData.mataKuliah<<string(spasiMatkul,' ')<<currentData.sks<<string(SpasiAngka((float)arrData[i].sks)+3,' ')<<nilaiAkhir<<string(SpasiAngka(nilaiAkhir)+2,' ')<<huruf<<endl;
+    }
+    UAS1.close();
+    //--------------------------------------------------------------------------------------------
+    ofstream UAS2 ("nilaiMahasiswa2.txt");
+    UAS2<<fixed;
+    UAS2<<setprecision(2);
+    
+    UAS2<<"-----------------------------------------------------------------------------------"<<endl;
+    UAS2<<"NIM"<<string(10,' ')<<"Nama"<<string(jlhSpasiNamaTerpanjang,' ')<<"Mata Kuliah"<<string(jlhSpasiTopMatkul,' ')<<"SKS"<<string(3,' ')<<"Absen"<<string(3,' ')<<"Rata Tugas"<<string(3,' ')<<"UTS"<<string(5,' ')<<"UAS"<<endl;
+    UAS2<<"-----------------------------------------------------------------------------------"<<endl;
+    
+    for (int i = 0; i < jumlahData; i++) {
+        biodata currentData = arrData[i];
+        float rataTugas = CariRataTugas(currentData);
+        int lengthNama = (int)arrData[i].nama.length();
+        int lengthMatkul = (int)arrData[i].mataKuliah.length();
+        int spasiMatkul = (int)SpasiTerpanjang(1)-lengthMatkul>=0 ?(int)SpasiTerpanjang(1)-lengthMatkul+3:14-lengthMatkul;
+        UAS2<<arrData[i].NIM<<string(3,' ')<<currentData.nama<<string(jlhSpasiNamaTerpanjang-lengthNama+4,' ')<<currentData.mataKuliah<<string(spasiMatkul,' ')<<currentData.sks<<string(SpasiAngka((float)arrData[i].sks)+3,' ')<<currentData.jumlahAbsen<<string(SpasiAngka(currentData.jumlahAbsen)+5,' ')<<rataTugas<<string(SpasiAngka(rataTugas)+7,' ')<<currentData.UTS<<string(SpasiAngka(currentData.UTS)+2,' ')<<currentData.UAS<<endl;
+    }
+}
