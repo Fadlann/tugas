@@ -1,0 +1,73 @@
+
+class nilaiMatkul:
+    nim = None
+    nama = None
+    nilai = None
+
+
+class Queue:
+    def __init__(self):
+        self.first = -1
+        self.last = -1
+        self.nilaiMatkul = []
+
+        for i in range(0, 4):
+            self.nilaiMatkul.append([])
+            self.nilaiMatkul[i] = nilaiMatkul
+    
+    def createEmpty(self):
+        self.first = -1
+        self.last = -1
+
+    def isEmpty(self):
+        return self.last == -1
+
+    def isFull(self):
+        return self.last == len(self.nilaiMatkul)-1
+    
+    def add(self, nim, nama, nilai):
+        if self.isFull():
+            print("Queue full")
+            return
+        self.first = 0
+        self.last = self.last + 1
+        self.nilaiMatkul[self.last].nim = nim
+        self.nilaiMatkul[self.last].nama = nama
+        self.nilaiMatkul[self.last].nilai = nilai        
+
+    def delete(self):
+        if self.last <= 0:
+            self.first = -1
+            self.last = -1
+        else:
+            for i in range(self.first + 1, self.last + 1):
+                self.nilaiMatkul[i-1].nim = self.nilaiMatkul[i].nim
+                self.nilaiMatkul[i-1].nama = self.nilaiMatkul[i].nama
+                self.nilaiMatkul[i-1].nilai = self.nilaiMatkul[i].nilai
+            
+            self.last = self.last - 1
+    
+    def printQueue(self):
+        if self.first == -1:
+            print("Queue full")
+            return
+        print("====Isi Queue====")
+        for i in range(self.last, self.first-1, -1):
+            print("Elemen ke ", i)
+            print("Nim : ", self.nilaiMatkul[i].nim)
+            print("Nama : ", self.nilaiMatkul[i].nama)
+            print("Nilai : ", self.nilaiMatkul[i].nilai)
+            print("==========")
+
+
+Q = Queue()
+Q.add(1910511059, "ridho", 100)
+Q.add(1910511057, "jae", 78)
+Q.add(1910511053, "karim", 89)
+
+Q.printQueue()
+print()
+print("=====Setelah data dihapus=====")
+Q.delete()
+Q.printQueue()
+    
