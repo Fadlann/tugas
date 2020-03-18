@@ -7,33 +7,29 @@ class customer:
         self.drink = drink
 
 class queue:
-    last = -1
     customer = []
 
     def isEmpty(self):
-        return self.last == -1
+        return len(self.customer) == 0
     
     def enqueue(self, name, drink):
-        self.last += 1
         self.customer.append(customer(name, drink))
     
     def dequeue(self):
-        for i in range(self.last):
-            self.customer[i] = self.customer[i+1]
-        self.last -= 1
+        if len(self.customer) > 0:
+            self.customer.remove(self.customer[0])
 
     def printQueue(self):
         print('')
-        if self.last == -1:
+        if self.isEmpty():
             print("Queue is empty")
-            print('')
-            return
-        print("==== Orders left ====")
-        for i in range(0, self.last + 1):
-            print("--")
-            print("Order Number",i+1)
-            print("Name :",self.customer[i].name)
-            print("Drink :",self.customer[i].drink)
+        else:
+            print("==== Orders left ====")
+            for i in range(0, len(self.customer)):
+                print("--")
+                print("Order Number",i+1)
+                print("Name :",self.customer[i].name)
+                print("Drink :",self.customer[i].drink)
         print('')
 
 queue = queue()
@@ -43,13 +39,8 @@ while(choice != 'q'):
     choice = input("Add customer? <a> Order's served? <k> Quit? <q> ")
     if choice == 'k':
         queue.dequeue()
-        queue.printQueue()
     elif choice == 'a':
         name = input("Name: ")
         drink = input("Drink: ")
         queue.enqueue(name, drink)
-        queue.printQueue()
-
-
-
-        
+    queue.printQueue()
