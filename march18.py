@@ -37,7 +37,5 @@ while(choice != 'q'):
     if choice == 'k':
         queue.dequeue()
     elif choice == 'a':
-        name = input("Name: ")
-        drink = input("Drink: ")
-        queue.enqueue(name, drink)
+        queue.enqueue(input("Name: "), input("Drink: "))
     queue.printQueue()
