@@ -1,7 +1,4 @@
 class customer:
-    name = None
-    drink = None
-
     def __init__(self, name, drink):
         self.name = name
         self.drink = drink
