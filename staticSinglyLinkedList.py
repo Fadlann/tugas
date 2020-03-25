@@ -19,7 +19,6 @@ class LinkedList:
             if self.head == None:
                 self.head = Node(number)
             elif number < self.head.value:
-                newNode = Node(number)
                 newNode.next = self.head
                 self.head = newNode
             else:
